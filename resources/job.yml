@@ -1,0 +1,9 @@
+resources:
+  jobs:
+    pro_project_job:
+      name: "Pro-Project-Data-Pipeline"
+      tasks:
+        - task_key: sample_task
+          existing_cluster_id: "" # You can specify or create a job cluster here
+          spark_python_task:
+            python_file: "../src/main.py" # We will create this script next
