@@ -6,5 +6,7 @@ include:
 
 targets:
   dev:
+    mode: development
+    default: true
     workspace:
-      host: https://adb-xxx.azuredatabricks.net # Your Databricks Workspace URL from outputs
+      host: https://adb-7405608947202714.14.azuredatabricks.net # Your exact workspace URL
