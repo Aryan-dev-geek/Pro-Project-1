@@ -1,0 +1,10 @@
+bundle:
+  name: pro-project-bundle
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    workspace:
+      host: https://adb-xxx.azuredatabricks.net # Your Databricks Workspace URL from outputs
