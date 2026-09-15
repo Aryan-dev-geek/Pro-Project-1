@@ -1,3 +1,4 @@
+# trigger deployment
 resource "azurerm_resource_group" "rg" {
   name     = "rg-proproject1-dev"
   location = "East US"
