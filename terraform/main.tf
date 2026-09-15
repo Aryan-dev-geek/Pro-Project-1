@@ -1,10 +1,10 @@
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-proproject1-dev-v2"
+  name     = "rg-proproject1-dev-v3"
   location = "East US"
 }
 
 resource "azurerm_storage_account" "storage" {
-  name                     = "proprojectstoragev2123" # Must be globally unique, lowercase letters and numbers only
+  name                     = "proprojectstoragev3123"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
@@ -12,9 +12,9 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_databricks_workspace" "workspace" {
-  name                        = "db-proproject1-dev-v2"
+  name                        = "db-proproject1-dev-v3"
   resource_group_name         = azurerm_resource_group.rg.name
   location                    = azurerm_resource_group.rg.location
   sku                         = "premium"
-  managed_resource_group_name = "rg-proproject1-db-managed-v2"
+  managed_resource_group_name = "rg-proproject1-db-managed-v3"
 }
