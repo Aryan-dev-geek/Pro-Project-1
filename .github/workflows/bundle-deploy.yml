@@ -1,0 +1,25 @@
+name: Deploy Databricks Asset Bundle
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'databricks.yml'
+      - 'resources/**'
+      - 'src/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Databricks CLI
+        uses: databricks/setup-databricks@main
+
+      - name: Deploy Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks bundle deploy --target dev
