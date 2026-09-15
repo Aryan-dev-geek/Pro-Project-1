@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Databricks CLI
-        uses: databricks/setup-databricks@main
+        uses: databricks/setup-cli@main
 
       - name: Deploy Bundle
         env:
