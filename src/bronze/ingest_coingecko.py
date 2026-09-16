@@ -1,10 +1,12 @@
 import requests
+import pandas as pd
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import current_timestamp, col
-from pyspark.sql.types import DoubleType
+from pyspark.sql.functions import current_timestamp
 
-spark = SparkSession.builder.appName("CoinGeckoBronzeFix").getOrCreate()
+# Initialize Spark Session
+spark = SparkSession.builder.appName("CoinGeckoIncrementalBronzeIngest").getOrCreate()
 
+# Fetch data from CoinGecko API
 url = "https://api.coingecko.com/api/v3/coins/markets"
 params = {
     "vs_currency": "usd",
@@ -15,26 +17,31 @@ params = {
 }
 
 response = requests.get(url, params=params)
+print("API Status Code:", response.status_code)
+
 if response.status_code == 200:
     data = response.json()
-    df = spark.createDataFrame(data)
+    print(f"Fetched {len(data)} records for incremental snapshot.")
     
-    # Explicitly cast numeric columns to Double to prevent type mismatches
-    numeric_cols = ["current_price", "market_cap", "total_volume", "high_24h", "low_24h"]
-    for c in numeric_cols:
-        if c in df.columns:
-            df = df.withColumn(c, col(c).cast(DoubleType()))
-
+    # Load into Pandas first to gracefully handle any minor data type fluctuations
+    pdf = pd.DataFrame(data)
+    
+    # Convert to Spark DataFrame
+    df = spark.createDataFrame(pdf)
+    
+    # Tag with the exact execution timestamp for historical tracking
     df_versioned = df.withColumn("ingestion_timestamp", current_timestamp())
     
-    table_name = "db_proproject1_dev_v3.default.bronze_coingecko_markets"
+    # Target our established v2 table
+    table_name = "db_proproject1_dev_v3.default.bronze_coingecko_markets_v2"
     
-    # Overwrite schema once to clear out the old LongType definition conflict
+    # APPEND mode ensures historical data is preserved every 15 minutes!
     df_versioned.write.format("delta") \
-        .mode("overwrite") \
-        .option("overwriteSchema", "true") \
+        .mode("append") \
+        .option("mergeSchema", "true") \
         .saveAsTable(table_name)
-        
-    print(f"Successfully re-created and initialized table schema for: {table_name}")
+    
+    total_count = spark.table(table_name).count()
+    print(f"SUCCESS! Appended new snapshot. Total rows in history: {total_count}")
 else:
-    raise Exception(f"Failed to fetch data: {response.status_code} - {response.text}")
+    raise Exception(f"Failed to fetch data from CoinGecko API: {response.status_code} - {response.text}")
