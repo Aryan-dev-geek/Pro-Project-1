@@ -3,8 +3,8 @@ import requests
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_timestamp, lit
 
-# Initialize Spark Session
-spark = SparkSession.builder.appName("CoinGeckoBronzeAppendIngestion").getOrCreate()
+# Initialize Spark Session with Unity Catalog support
+spark = SparkSession.builder.appName("CoinGeckoBronzeUCAppendIngestion").getOrCreate()
 
 # Fetch data from CoinGecko Public API
 url = "https://api.coingecko.com/api/v3/coins/markets"
@@ -23,12 +23,13 @@ if response.status_code == 200:
     # Convert JSON to Spark DataFrame
     df = spark.createDataFrame(data)
     
-    # Add an ingestion timestamp so historical runs are preserved and trackable
+    # Add an ingestion timestamp so historical snapshots are preserved
     df_versioned = df.withColumn("ingestion_timestamp", current_timestamp())
     
-    # Append mode ensures history is kept across every run!
-    bronze_output_path = "/mnt/delta/bronze/coingecko_markets"
-    df_versioned.write.format("delta").mode("append").save(bronze_output_path)
-    print("Successfully appended historical CoinGecko market data to Bronze layer.")
+    # Save as a Unity Catalog managed table using append mode for history retention
+    table_name = "default.bronze_coingecko_markets"
+    df_versioned.write.format("delta").mode("append").saveAsTable(table_name)
+    
+    print(f"Successfully appended historical CoinGecko market data to Unity Catalog table: {table_name}")
 else:
     raise Exception(f"Failed to fetch data from CoinGecko API: {response.status_code} - {response.text}")
