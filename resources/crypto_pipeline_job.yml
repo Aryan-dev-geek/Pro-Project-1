@@ -9,11 +9,11 @@ resources:
         - task_key: bronze_ingest
           existing_cluster_id: "0915-143701-in0offly"  # Or use your cluster spec
           spark_python_task:
-            python_file: "src/bronze/ingest_coingecko.py"
+            python_file: "../src/bronze/ingest_coingecko.py"
             
         - task_key: silver_clean
           depends_on:
             - task_key: bronze_ingest
           existing_cluster_id: "0915-143701-in0offly"
           spark_python_task:
-            python_file: "src/silver/clean_crypto.py"
+            python_file: "../src/silver/clean_crypto.py"
