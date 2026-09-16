@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, current_timestamp, to_timestamp
 
-# Initialize Spark Session
+## Initialize Spark Session
 spark = SparkSession.builder.appName("CryptoSilverCleaning").getOrCreate()
 
 # Define source (Bronze v2) and target (Silver) tables
