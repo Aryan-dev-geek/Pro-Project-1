@@ -1,0 +1,19 @@
+resources:
+  jobs:
+    crypto_pipeline:
+      name: "crypto-medallion-pipeline"
+      schedule:
+        quartz_cron_expression: "0 0/15 * * * ?"
+        timezone_id: "UTC"
+      tasks:
+        - task_key: bronze_ingest
+          existing_cluster_id: "Aryan-Dev-Cluster"  # Or use your cluster spec
+          spark_python_task:
+            python_file: "src/bronze/ingest_coingecko.py"
+            
+        - task_key: silver_clean
+          depends_on:
+            - task_key: bronze_ingest
+          existing_cluster_id: "Aryan-Dev-Cluster"
+          spark_python_task:
+            python_file: "src/silver/clean_crypto.py"
