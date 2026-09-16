@@ -4,7 +4,7 @@ from pyspark.sql.functions import col, current_timestamp, to_timestamp
 ## Initialize Spark Session
 spark = SparkSession.builder.appName("CryptoSilverCleaning").getOrCreate()
 
-# Define source (Bronze v2) and target (Silver) tables
+## Define source (Bronze v2) and target (Silver) tables
 bronze_table = "db_proproject1_dev_v3.default.bronze_coingecko_markets_v2"
 silver_table = "db_proproject1_dev_v3.default.silver_crypto_markets"
 
