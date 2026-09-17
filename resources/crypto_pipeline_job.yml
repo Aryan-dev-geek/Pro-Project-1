@@ -7,20 +7,17 @@ resources:
         timezone_id: "UTC"
       tasks:
         - task_key: bronze_ingest
-          existing_cluster_id: "0915-143701-in0offly"
           spark_python_task:
             python_file: "../src/bronze/ingest_coingecko.py"
             
         - task_key: silver_clean
           depends_on:
             - task_key: bronze_ingest
-          existing_cluster_id: "0915-143701-in0offly"
           spark_python_task:
             python_file: "../src/silver/clean_crypto.py"
 
         - task_key: gold_aggregate
           depends_on:
             - task_key: silver_clean
-          existing_cluster_id: "0915-143701-in0offly"
           spark_python_task:
             python_file: "../src/gold/aggregate_crypto.py"
