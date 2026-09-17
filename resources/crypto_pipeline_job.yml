@@ -3,7 +3,7 @@ resources:
     crypto_pipeline:
       name: "crypto-medallion-pipeline"
       schedule:
-        quartz_cron_expression: "0 0/15 * * * ?"
+        quartz_cron_expression: "0 0/5 * * * ?"
         timezone_id: "UTC"
       tasks:
         - task_key: bronze_ingest
