@@ -52,8 +52,9 @@ df_asset_trends = df_silver.select(
     col("last_updated")
 ).withColumn("processed_at", current_timestamp())
 
+# USE APPEND SO HISTORICAL SNAPSHOTS ACCUMULATE OVER TIME!
 df_asset_trends.write.format("delta") \
-    .mode("overwrite") \
+    .mode("append") \
     .option("mergeSchema", "true") \
     .saveAsTable(gold_asset_table)
 
