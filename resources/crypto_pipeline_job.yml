@@ -28,8 +28,8 @@ resources:
           spark_python_task:
             python_file: "../src/gold/aggregate_crypto.py"
 
-      # Define serverless environment profile
+      # Define serverless environment profile with a valid environment version
       environments:
         - environment_key: serverless_env
           spec:
-            client: "default"
+            environment_version: "4"
