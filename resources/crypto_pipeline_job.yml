@@ -5,7 +5,7 @@ resources:
       
       # Runs automatically every 15 minutes
       schedule:
-        quartz_cron_expression: "0 0/15 * * * ?"
+        quartz_cron_expression: "0 0/5 * * * ?"
         timezone_id: "UTC"
         pause_status: "UNPAUSED"
 
