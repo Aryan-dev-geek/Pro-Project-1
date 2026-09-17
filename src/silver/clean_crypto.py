@@ -1,17 +1,14 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, current_timestamp, to_timestamp
 
-# Initialize Spark Session
 spark = SparkSession.builder.appName("CryptoSilverCleaning").getOrCreate()
 
-# Define source (Bronze v2) and target (Silver) tables
 bronze_table = "db_proproject1_dev_v3.default.bronze_coingecko_markets_v2"
 silver_table = "db_proproject1_dev_v3.default.silver_crypto_markets"
 
 print(f"Reading raw data from Bronze table: {bronze_table}")
 df_bronze = spark.table(bronze_table)
 
-# 1. Clean, cast, and filter nulls/negative prices first
 df_cleaned = df_bronze.select(
     col("id").cast("string"),
     col("symbol").cast("string"),
@@ -34,11 +31,8 @@ df_cleaned = df_bronze.select(
     col("market_cap").isNotNull()
 )
 
-# 2. Deduplicate based on coin ID and the specific ingestion timestamp snapshot window
 df_deduped = df_cleaned.dropDuplicates(["id", "ingestion_timestamp"])
 
-# 3. Write using overwrite (or partition-replace) to ensure scheduled runs don't stack duplicates 
-# for past snapshots that were already cleaned.
 df_deduped.write.format("delta") \
     .mode("overwrite") \
     .option("mergeSchema", "true") \
