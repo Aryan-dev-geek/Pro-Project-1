@@ -70,7 +70,7 @@ df_latest = df_silver.filter(col("ingestion_timestamp") == latest_timestamp)
 window_spec = Window.orderBy(col("price_change_percentage_24h").desc())
 
 df_top_gainers = df_latest.withColumn("rank", row_number().over(window_spec)) \
-    .filter(col("rank") <= 3) \
+    .filter(col("rank") <= 10) \
     .select(
         col("rank"),
         col("name"),
