@@ -9,4 +9,4 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://adb-7405608947202714.14.azuredatabricks.net # Your exact workspace URL
+      host: https://adb-7405608947202714.14.azuredatabricks.net # Databricks workspace URL
