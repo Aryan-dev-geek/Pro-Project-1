@@ -59,7 +59,6 @@ df_asset_trends.write.format("delta") \
 
 print(f"SUCCESS! Asset trends appended to: {gold_asset_table}")
 
-
 # ==========================================
 # TABLE 3: Dynamic Top 3 Gainers (For KPI Cards)
 # ==========================================
